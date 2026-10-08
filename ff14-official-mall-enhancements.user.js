@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         一系列FF14官网&商城功能优化
 // @namespace    https://github.com/Angelways/ff14-official-mall-enhancements
-// @version      3.1.2
+// @version      3.1.3
 // @author       Angelways, annangela
 // @homepageURL  https://github.com/Angelways
 // @description  盛趣登录自动勾选协议、FF14 仓库批量领取、官网自动进入简约版及完整导航。
@@ -413,6 +413,7 @@
             submitContainer.append(selectNoneButton);
             paidWarehouseInput.add(freeWarehouseInput).on("change", async ({ target }) => {
                 const self = $(target);
+                const warehouseSourceType = self.data("sourceType");
                 self.data("otherInput").prop("checked", false);
                 resultCotainer.empty().text("加载中……");
                 try {
@@ -424,7 +425,7 @@
                             order: 0,
                             page: 1,
                             pageSize: 100,
-                            sourceType: self.data("sourceType"),
+                            sourceType: warehouseSourceType,
                             status: 0,
                         },
                         type: "GET",
@@ -454,7 +455,7 @@
                         width: "fit-content",
                     }).append(resultTable));
                     const resultTableBody = resultTable.find("tbody");
-                    propsList.forEach(({ propsWarehouseId, productUrl, productName, purchaseDate, exchangeDate, skuId, sourceType }, _index) => {
+                    propsList.forEach(({ propsWarehouseId, productUrl, productName, purchaseDate, exchangeDate, skuId }, _index) => {
                         const index = _index + 1;
                         const row = $("<tr>");
                         row.html('<td style="border: gray solid 1px; padding: .5rem;"></td>'.repeat(4));
@@ -489,7 +490,8 @@
                         }
                         row.find("td").eq(2).text(formatWarehouseDate(purchaseDate || exchangeDate));
                         const input = $("<input>");
-                        input.attr("type", "checkbox").data({ propsWarehouseId, sourceType });
+                        // The requested warehouse determines the category, not each item's source metadata.
+                        input.attr("type", "checkbox").data({ propsWarehouseId, sourceType: warehouseSourceType });
                         row.find("td").eq(3).append(input);
                         resultTableBody.append(row);
                     });
