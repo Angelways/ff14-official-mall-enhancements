@@ -13,7 +13,7 @@
 
 需要 Chrome、Edge 或 Firefox，以及 [Tampermonkey](https://www.tampermonkey.net/)。主要使用 Chrome 验证。
 
-[安装脚本](https://raw.githubusercontent.com/Angelways/ff14-official-mall-enhancements/main/ff14-official-mall-enhancements.user.js)
+[在 Greasy Fork 安装](https://greasyfork.org/zh-CN/scripts/599251) · [从 GitHub 安装](https://raw.githubusercontent.com/Angelways/ff14-official-mall-enhancements/main/ff14-official-mall-enhancements.user.js)
 
 打开安装链接并按 Tampermonkey 提示安装；也可下载 `.user.js` 后从 Tampermonkey 的“实用工具”导入文件。安装后刷新目标页面，保持此合集只启用一个实例。
 
@@ -39,4 +39,4 @@
 
 问题反馈请提交 [GitHub Issue](https://github.com/Angelways/ff14-official-mall-enhancements/issues)，附页面地址、浏览器及脚本版本，并描述复现步骤。请勿上传账号、密码或登录凭据。
 
-GitHub `main` 分支中的 `ff14-official-mall-enhancements.user.js` 用于 Greasy Fork 同步；后续更新应同时递增脚本 `@version`。
+GitHub `main` 分支中的 `ff14-official-mall-enhancements.user.js` 用于 Greasy Fork 自动定期同步；页面说明从 `GreasyFork发布说明.md` 同步。后续更新脚本时应同时递增 `@version`。
