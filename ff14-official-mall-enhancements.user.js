@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         一系列FF14官网&商城功能优化
 // @namespace    https://github.com/Angelways/ff14-official-mall-enhancements
-// @version      3.1.4
+// @version      3.1.5
 // @author       Angelways, annangela
 // @homepageURL  https://github.com/Angelways
-// @description  盛趣登录自动勾选协议、FF14 仓库批量领取、官网自动进入简约版及完整导航。
+// @description  盛趣登录自动勾选协议及关闭通行证提示、FF14 仓库批量领取、官网自动进入简约版及完整导航。
 // @license      GPL-3.0-or-later
 // @match        *://*.sdo.com/*
 // @match        *://sdo.com/*
@@ -31,6 +31,7 @@
     const POLICY = /隐私|协议|条款|政策/;
     const skipped = new WeakSet();
     const lastAttempt = new WeakMap();
+    const dismissedNotices = new WeakSet();
     let pending = false;
     let timer;
     let observer;
@@ -79,9 +80,30 @@
         return false;
     }
 
+    function dismissPassportNotice() {
+        const visible = element => Boolean(element?.getClientRects().length)
+            && getComputedStyle(element).visibility === 'visible';
+        for (const dialog of document.querySelectorAll('.mask-tips-box')) {
+            const content = dialog.querySelector('.mask-tips-content');
+            const button = dialog.querySelector('.action-confirm-btn');
+            if (!isLogin(dialog) || !visible(dialog) || !visible(button)
+                || normalize(content?.textContent) !== '请使用盛趣游戏通行证访问本站'
+                || normalize(button.textContent) !== '我已知晓，重新登录') {
+                dismissedNotices.delete(dialog);
+                continue;
+            }
+            if (button.matches(':disabled') || button.getAttribute('aria-disabled') === 'true'
+                || dismissedNotices.has(dialog)) continue;
+            // Use the site's callback to clear the incompatible session and its overlay.
+            dismissedNotices.add(dialog);
+            button.click();
+        }
+    }
+
     function scan() {
         pending = false;
         if (document.hidden) return;
+        dismissPassportNotice();
         for (const element of document.querySelectorAll(CHECKBOX)) {
             if (isChecked(element) || skipped.has(element) || !isAgreement(element)) continue;
             if (element.matches(':disabled') || element.getAttribute('aria-disabled') === 'true') continue;
