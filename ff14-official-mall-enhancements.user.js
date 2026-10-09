@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         一系列FF14官网&商城功能优化
 // @namespace    https://github.com/Angelways/ff14-official-mall-enhancements
-// @version      3.1.3
+// @version      3.1.4
 // @author       Angelways, annangela
 // @homepageURL  https://github.com/Angelways
 // @description  盛趣登录自动勾选协议、FF14 仓库批量领取、官网自动进入简约版及完整导航。
@@ -818,7 +818,7 @@
             ['NEWS', '新闻中心', [['最新情报', BASE + '#/newstab/newslist'], ['版本更新笔记', BASE + '#/patchnote'], ['服务器状况', BASE + '#/servers']]],
             ['GAME INFO', '游戏资料', [['客户端下载', BASE + '#/download'], ['壁纸/铃声下载', 'https://ff.web.sdo.com/special/maverick7.0.html', true], ['游戏指南', BASE + '#/guide'], ['资料站', BASE + '#/station']]],
             ['SERVICE', '客户服务', [['注册账号', 'https://ff.web.sdo.com/web8/register.html', true], ['意见反馈', 'https://survey.dw.sdo.com/3Mvc8', true], ['用户协议', BASE + '#/newstab/newscont/217463', true], ['账号处罚细则', BASE + '#/newstab/newscont/268832', true], ['违规处理平台', 'https://actff1.web.sdo.com/project/20210621ffviolation/index.html', true], ['隐私政策', BASE + '#/newstab/newscont/333945', true]]],
-            ['LINK', '相关网站', [['最新活动', 'https://actff1.web.sdo.com/Project/20181018ffactive/index.html', true], ['官方论坛', 'https://ff.web.sdo.com/bbs', true], ['海德林咖啡餐厅', 'https://ff.web.sdo.com/ffcafe/index.html#/index', true], ['FF14 X ARTIST', 'https://actff1.web.sdo.com/project/20250601artist/index.html#/index', true]]]
+            ['LINK', '相关网站', [['最新活动', 'https://actff1.web.sdo.com/Project/20181018ffactive/index.html', true], ['官方论坛', 'https://ff.web.sdo.com/bbs', true], ['海德林咖啡餐厅', 'https://ff.web.sdo.com/ffcafe/index.html#/index', true], ['FF14 X ARTIST', 'https://actff1.web.sdo.com/project/20250601artist/index.html#/index', true], ['萌新招待站', 'https://actff1.web.sdo.com/20250713_ZhaoDaiNew/index.html#/index', true]]]
         ];
         menu = document.createElement('div');
         menu.id = 'ff14-simple-navigation-menu';
@@ -891,7 +891,7 @@
         #ff14-simple-navigation .ff14-nav-logo { display: block; flex: 0 0 133px; height: 39px; background: url(https://static.web.sdo.com/jijiamobile/pic/ff14/190110ffweb/logo.png) center/contain no-repeat; }
         #ff14-simple-navigation .ff14-nav-right { display: flex; align-items: center; gap: 16px; }
         #ff14-simple-navigation .ff14-nav-categories { display: flex; }
-        #ff14-simple-navigation .ff14-nav-category { width: 110px; height: 76px; border: 0; padding: 0; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: inherit; cursor: pointer; }
+        #ff14-simple-navigation .ff14-nav-category { width: 120px; height: 76px; border: 0; padding: 0; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font: inherit; cursor: pointer; }
         #ff14-simple-navigation .en { color: #9e9e9e; font-size: 10px; line-height: 12px; }
         #ff14-simple-navigation .zh { color: #c9c9c9; font-size: 16px; font-weight: 700; line-height: 20px; }
         #ff14-simple-navigation .ff14-nav-category:hover .zh, #ff14-simple-navigation .ff14-nav-category:focus .zh { color: #fff; }
@@ -903,20 +903,20 @@
         #ff14-simple-navigation .ff14-nav-preference { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #ccc; white-space: nowrap; cursor: pointer; }
         #ff14-simple-navigation .ff14-nav-preference input { margin: 0; width: 15px; height: 15px; accent-color: #e3c461; }
         #ff14-simple-navigation .ff14-nav-dropdown { position: absolute; inset: 100% 0 auto; background: rgba(0,0,0,.92); border-top: 1px solid #444; padding: 18px 40px 24px; }
-        #ff14-simple-navigation .ff14-nav-columns { display: grid; grid-template-columns: repeat(5,110px); justify-content: end; margin-right: 438px; }
-        #ff14-simple-navigation .ff14-nav-column a { display: block; color: #bbb; font-size: 14px; line-height: 20px; padding: 8px 0; text-align: center; overflow-wrap: anywhere; }
+        #ff14-simple-navigation .ff14-nav-columns { display: grid; grid-template-columns: repeat(5,120px); justify-content: end; margin-right: 438px; }
+        #ff14-simple-navigation .ff14-nav-column a { display: block; color: #bbb; font-size: 16px; font-weight: 700; line-height: 24px; padding: 6px 0; text-align: center; overflow-wrap: anywhere; }
         #ff14-simple-navigation .ff14-nav-column a:hover { color: #e3c461; }
         #ff14-simple-navigation .ff14-nav-column-title { display: none; }
         #ff14-simple-navigation [hidden] { display: none !important; }
         #ff14-simple-navigation :focus-visible { outline: 2px solid #e3c461; outline-offset: 2px; }
         @media(max-width:1400px) {
             #ff14-simple-navigation { padding: 0 20px; gap: 12px; }
-            #ff14-simple-navigation .ff14-nav-category { width: 94px; }
             #ff14-simple-navigation .ff14-nav-actions, #ff14-simple-navigation .ff14-nav-right { gap: 10px; }
-            #ff14-simple-navigation .ff14-nav-columns { grid-template-columns: repeat(5,94px); margin-right: 414px; }
+            #ff14-simple-navigation .ff14-nav-columns { margin-right: 414px; }
         }
         @media(max-width:1150px) {
             #ff14-simple-navigation .ff14-nav-logo { display: none; }
+            #ff14-simple-navigation .ff14-nav-category { width: 94px; }
             #ff14-simple-navigation .ff14-nav-right { width: 100%; justify-content: center; }
             #ff14-simple-navigation .ff14-nav-columns { grid-template-columns: repeat(4,minmax(0,1fr)); margin: 0; }
             #ff14-simple-navigation .ff14-nav-column:first-child { display: none; }
