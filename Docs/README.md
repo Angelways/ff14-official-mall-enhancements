@@ -112,7 +112,4 @@ https://raw.githubusercontent.com/Angelways/OmniOnlineModules/main/Modules/ShopC
 ## 相关链接
 
 - [网站脚本安装](https://greasyfork.org/zh-CN/scripts/599251)
-- [完整功能与安装说明](../安装说明.md)
-- [商城收录在线模块说明](https://github.com/Angelways/OmniOnlineModules/tree/main/Modules/ShopCollectionExport)
-- [原 Word 教程下载](../Docx/一个简单的商城道具收录教程.docx)
 - [问题反馈](https://github.com/Angelways/ff14-official-mall-enhancements/issues)
