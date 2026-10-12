@@ -30,6 +30,8 @@
 
 详细使用说明见 [安装说明.md](安装说明.md)。Chrome 如提示脚本无法运行，请在 Tampermonkey 扩展详情中按提示启用“允许运行用户脚本”。
 
+商城道具收录的安装、导出与浏览器导入流程见 [商城道具收录图文教程](Docs/README.md)，可直接在 GitHub 页面阅读。
+
 ## 批量领取
 
 在 `qu.sdo.com/personal-center` 或 `mall.sdo.com/personal-center` 的 FF14 道具仓库点击顶部按钮，选择道具、确认数量，选择大区与角色，再确认领取。每次最多加载 100 件道具，领取完成后自动刷新。
