@@ -1,0 +1,6 @@
+{
+  "name": "ff14-official-mall-enhancements-checks",
+  "private": true,
+  "scripts": { "test": "node --test Tests/*.test.cjs" },
+  "devDependencies": { "jsdom": "30.1.2" }
+}

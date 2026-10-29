@@ -1,6 +1,6 @@
 # 一系列FF14官网&商城功能优化
 
-用于 Tampermonkey 的 FF14 官网与盛趣商城功能合集，当前正式版本 **3.2.0**。
+用于 Tampermonkey 的 FF14 官网与盛趣商城功能合集，当前正式版本 **3.2.1**。
 
 ## 功能
 
@@ -10,6 +10,15 @@
 - 进入 FF14 完整版首页时自动转到简约版，默认开启，可在 Tampermonkey 菜单或简约版导航中关闭。
 - 简约版官网补充新闻中心、游戏资料、客户服务、相关网站、商城、充值等导航，并加入萌新招待站。
 
+## 3.2.1 更新
+
+- 对照 2026-10-29 官方商城完整 813 件商品，补齐 9 件新品：欢庆新式文化衫组合、迷你文森特、重返擂台/泪流至曦明乐谱套装、霹雳舞、南瓜行者、夜魔套装、特制守护天节海报2025、特制蝙蝠南瓜。
+- 文化衫按 3 件、夜魔及两组乐谱分别按 5 件判定；只拥有部分部件继续标记“部分已获取”。
+- 旧下载缓存不会覆盖新版脚本内置清单；比内置数据更新的手动下载仍优先使用。
+- 游戏内导出模块 1.3.0 已适配 Omni API 1 / 1.1.8.2+，原导出 JSON 兼容，无需重新配置浏览器角色数据。
+
+商城更新检查：`npm install && npm test`；只刷新公开商品数据可运行 `python Tools/update_catalog.py`，发布时同步递增脚本 `@version`。新商品解析与旧缓存升级、角色切换、全套/部分标记及筛选均有自动化检查。商品 API 不需要登录。
+
 ## 3.2.0 更新
 
 - 商城道具收录已并入主脚本：导入 OmniShopOwned.json，按角色标记全套、部分已获取及家具数量，并筛选当前页商品。
@@ -18,7 +27,7 @@
 - 登录协议、通行证提示、登录方式/填写、批量领取、自动简约版、简约版导航、商城收录及两种标记均可独立关闭。
 - 升级时替换原主脚本内容，并停用独立商城收录脚本；独立脚本与合集存储隔离，首次需重新导入同一份 JSON。
 
-正式安装包在 `E:\WorkPlace\Releases\ff14-official-mall-enhancements\3.2.0`，也可从 [GitHub Releases](https://github.com/Angelways/ff14-official-mall-enhancements/releases/tag/v3.2.0) 下载。
+3.2.1 安装包在 `E:\WorkPlace\Releases\ff14-official-mall-enhancements\3.2.1`，在线安装地址见下方；历史版本可从 [GitHub Releases](https://github.com/Angelways/ff14-official-mall-enhancements/releases) 下载。
 
 ## 安装
 

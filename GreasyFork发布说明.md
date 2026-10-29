@@ -1,6 +1,6 @@
 # 一系列FF14官网&商城功能优化
 
-当前版本：**3.2.0**。
+当前版本：**3.2.1**。
 
 ## 功能
 
@@ -28,3 +28,5 @@
 - FF14 道具仓库批量领取功能：[annangela](https://greasyfork.org/zh-CN/users/129402-annangela)。
 - 许可证：GPL-3.0-or-later。
 - [GitHub 源码、使用说明与反馈](https://github.com/Angelways/ff14-official-mall-enhancements)。
+
+3.2.1：同步官方 813 件商品，新增 9 件新品及完整套装部件；修复旧缓存覆盖新版内置清单。兼容 Omni 新版 API 1 导出模块 1.3.0，已有导出 JSON 继续可用。
