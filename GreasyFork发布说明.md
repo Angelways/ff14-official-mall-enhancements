@@ -10,7 +10,7 @@
 
 3.道具商城页面优化。主要包括：道具仓库物品批量领取；
 
-4.商城页面展示游戏内已获取的道具(可开关，需要游戏内亚拉戈科技：[简易教程点击此处！！！请注意：游戏内任何插件以及脚本均违反SE与盛趣用户协议，请慎用](https://github.com/Angelways/ff14-official-mall-enhancements/blob/main/Docs/README.md))。
+4.商城页面展示游戏内已获取的道具(可开关，可手动标记。自动标记功能需要游戏内亚拉戈科技：[简易教程点击此处！！！请注意：游戏内任何插件以及脚本均违反SE与盛趣用户协议，请慎用](https://github.com/Angelways/ff14-official-mall-enhancements/blob/main/Docs/README.md))。
 
 ## 使用
 
