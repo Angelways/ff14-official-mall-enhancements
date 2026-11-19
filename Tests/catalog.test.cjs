@@ -51,7 +51,7 @@ test('older or undated caches cannot hide bundled additions; newer downloads rem
 });
 
 function page(items, values = new Map(), url = 'https://qu.sdo.com/tools-shop') {
-    const cards = fixtures.map(p => `<div class="el-col"><div class="qu-grid-item"><div class="qu-grid-image"></div><div class="qu-grid-name"><div class="qu-grid-name-div" title="${p.name}">${p.name}</div></div></div></div>`).join('');
+    const cards = fixtures.map(p => `<div class="el-col"><div class="qu-grid-item"><div class="qu-grid-image"></div><div class="qu-grid-name"><div class="qu-grid-name-div" title="${p.name}">${p.name}</div></div><div class="qu-grid-price"><div class="qu-price-left">6800 点券</div></div></div></div>`).join('');
     const content = url.includes('/product-detail/')
         ? `<div class="qu-container"><div class="detail-right-title">${fixtures[0].name}</div></div>`
         : `<div id="product-list"><div class="qu-container"><div class="search-content"></div><div class="el-row">${cards}</div></div></div>`;
@@ -105,6 +105,15 @@ function selectValue(dom, selector, value) {
     control.dispatchEvent(new dom.window.Event('change', {bubbles: true}));
 }
 
+function chooseManual(document, control, value) {
+    const menu = document.getElementById(control.getAttribute('aria-controls'));
+    if (menu.hidden) control.click();
+    assert.equal(control.getAttribute('aria-expanded'), 'true');
+    menu.querySelector(`button[value="${value}"]`).click();
+    assert.equal(control.getAttribute('aria-expanded'), 'false');
+    assert.equal(menu.hidden, true);
+}
+
 test('manual marks work without an import, filter the list, and persist across list and detail pages', () => {
     const values = new Map();
     const list = page(null, values);
@@ -112,10 +121,14 @@ test('manual marks work without an import, filter the list, and persist across l
         const document = list.window.document;
         let cardClicks = 0;
         document.querySelector('.qu-grid-item').addEventListener('click', () => cardClicks++);
-        document.querySelector('.omni-owned-manual').click();
+        const control = document.querySelector('.qu-grid-price > .omni-owned-manual');
+        control.click();
         assert.equal(cardClicks, 0);
-        selectValue(list, '.omni-owned-manual', 'owned');
-        assert.equal(document.querySelector('.omni-owned-image').textContent, '✓ 手动已获取');
+        assert.equal(control.firstElementChild.textContent, '收录');
+        assert.equal(control.lastElementChild.className, 'omni-owned-chevron');
+        chooseManual(document, control, 'owned');
+        assert.equal(control.firstElementChild.textContent, '✓ 已获取');
+        assert.equal(document.querySelector('.omni-owned-image'), null);
         document.querySelector('[data-filter="owned"]').click();
         assert.equal(document.querySelectorAll('[data-omni-owned-hidden]').length, fixtures.length - 1);
     } finally { list.window.close(); }
@@ -123,10 +136,11 @@ test('manual marks work without an import, filter the list, and persist across l
     const detail = page(null, values, 'https://mall.sdo.com/product-detail/2113165536521342976');
     try {
         const document = detail.window.document;
-        assert.equal(document.querySelector('.omni-owned-manual').value, 'owned');
-        selectValue(detail, '.omni-owned-manual', 'unowned');
-        assert.equal(document.querySelector('.omni-owned-name').textContent, '手动未获取');
-        selectValue(detail, '.omni-owned-manual', 'auto');
+        const control = document.querySelector('.detail-right-title > .omni-owned-manual');
+        assert.equal(control.dataset.state, 'owned');
+        chooseManual(document, control, 'unowned');
+        assert.equal(control.firstElementChild.textContent, '− 未获取');
+        chooseManual(document, control, 'auto');
         assert.equal(document.querySelector('.omni-owned-name'), null);
     } finally { detail.window.close(); }
     assert.deepEqual(Object.keys(values.get('omni-shop-manual-v1')), []);
@@ -139,16 +153,18 @@ test('manual overrides are local to a character and automatic restores imported 
         const document = dom.window.document;
         const badge = () => document.querySelector('.omni-owned-image')?.textContent;
         const role = '[aria-label="收录角色"]';
+        const control = document.querySelector('.omni-owned-manual');
         assert.equal(badge(), '✓ 已获取');
-        selectValue(dom, '.omni-owned-manual', 'unowned');
-        assert.equal(badge(), '手动未获取');
+        chooseManual(document, control, 'unowned');
+        assert.equal(control.dataset.state, 'unowned');
+        assert.equal(badge(), undefined);
         selectValue(dom, role, '2');
-        assert.equal(badge(), undefined);
+        assert.equal(control.dataset.state, 'auto');
         selectValue(dom, role, '');
-        assert.equal(badge(), undefined);
+        assert.equal(control.dataset.state, 'auto');
         selectValue(dom, role, '1');
-        assert.equal(badge(), '手动未获取');
-        selectValue(dom, '.omni-owned-manual', 'auto');
+        assert.equal(control.dataset.state, 'unowned');
+        chooseManual(document, control, 'auto');
         assert.equal(badge(), '✓ 已获取');
     } finally { dom.window.close(); }
 });

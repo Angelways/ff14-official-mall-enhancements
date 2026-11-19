@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         一系列FF14官网&商城功能优化
 // @namespace    https://github.com/Angelways/ff14-official-mall-enhancements
-// @version      3.3.0
+// @version      3.3.1
 // @author       Angelways, annangela
 // @homepageURL  https://github.com/Angelways
 // @description  保留独立登录配置和商城收录面板，另提供总配置悬浮窗控制登录、官网、仓库及收录功能。
@@ -1508,7 +1508,8 @@ const FF14Enhancements = (() => {
     const ENABLED_KEY = 'omni-shop-enabled-v1';
     const FILTER_KEY = 'omni-shop-filter-v1';
     const MANUAL_KEY = 'omni-shop-manual-v1';
-    const MANUAL_LABELS = { auto: '自动判定', owned: '手动：已获取', unowned: '手动：未获取' };
+    const MANUAL_LABELS = { auto: '自动判定', owned: '已获取', unowned: '未获取' };
+    const MANUAL_BADGES = { auto: '收录', owned: '✓ 已获取', unowned: '− 未获取' };
     function registerCollectionMenu() {
         if (typeof GM_registerMenuCommand !== 'function') return;
         const active = FF14Enhancements.get(ENABLED_KEY, true) !== false;
@@ -1601,7 +1602,6 @@ const FF14Enhancements = (() => {
     }
 
     function badgeText(result) {
-        if (result.manual) return result.full ? '✓ 手动已获取' : '手动未获取';
         if (!result.full) return `部分已获取 ${result.count}/${result.total}`;
         if (!result.furniture) return '✓ 已获取';
         const counts = [];
@@ -1684,11 +1684,23 @@ const FF14Enhancements = (() => {
       .omni-owned-image{position:absolute!important;top:9px!important;right:9px!important;z-index:9!important;background:#15734bef!important;color:#fff!important;padding:4px 9px!important;border-radius:5px!important;font:bold 14px/1.5 system-ui!important;pointer-events:none!important;box-shadow:0 1px 4px #0004}
       .omni-owned-name{display:inline-block!important;background:#e5f5ec!important;color:#146440!important;border:1px solid #9bceb0!important;margin-left:7px!important;padding:1px 6px!important;border-radius:4px!important;font:12px/1.5 system-ui!important;vertical-align:middle!important;white-space:nowrap!important}
       .omni-owned-partial{background:#936000ef!important;color:#fff!important} .omni-owned-name.omni-owned-partial{background:#fff4dc!important;color:#8c5900!important;border-color:#dfc17e!important}
-      .omni-owned-image.omni-owned-unowned{background:#535962ef!important}
-      .omni-owned-name.omni-owned-unowned{background:#f1f3f5!important;color:#414750!important;border-color:#b7bec7!important}
-      .omni-owned-manual{box-sizing:border-box;display:block;width:max-content;max-width:100%;height:auto;margin:5px 0 2px;padding:3px 6px;border:1px solid #b7c4be;border-radius:4px;background:#fff;color:#263b32;font:12px/1.4 system-ui,sans-serif;cursor:pointer}
-      .qu-grid-item > .omni-owned-manual{margin-left:8px}
-      .omni-owned-manual:focus-visible{outline:2px solid #16734b;outline-offset:2px}
+      .qu-grid-price:has(> .omni-owned-manual){display:flex!important;align-items:center;gap:0 6px;height:auto!important;min-height:36px}
+      .qu-grid-price:has(> .omni-owned-manual) > .qu-price-left{flex-shrink:0}
+      .qu-grid-price:has(> .omni-owned-manual) > .qu-price-right{min-width:0;line-height:1.25!important;white-space:normal}
+      button.omni-owned-manual{box-sizing:border-box;display:grid;justify-items:center;align-content:center;row-gap:3px;flex:none;min-width:66px;min-height:36px;margin:0 8px 0 auto;padding:4px 8px;border:1px solid #dce0e5;border-radius:999px;background:#fff;color:#5b626d;font:12px/1.15 system-ui,sans-serif;text-align:center;white-space:nowrap;cursor:pointer}
+      .detail-right-title > .omni-owned-manual,.qu-grid-item > .omni-owned-manual{margin:5px 0 0}
+      button.omni-owned-manual:hover{background:#f1f3f5}
+      button.omni-owned-manual[data-state="owned"]{border-color:transparent;background:#e5f6ed;color:#186046}
+      button.omni-owned-manual[data-state="unowned"]{border-color:transparent;background:#f1f3f5;color:#353943}
+      .omni-owned-chevron{display:grid;place-items:center;width:10px;height:8px}
+      .omni-owned-chevron::before{content:"";box-sizing:content-box;width:4px;height:4px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-1px) rotate(45deg)}
+      .omni-owned-manual[aria-expanded="true"] .omni-owned-chevron::before{transform:translateY(1px) rotate(225deg)}
+      #omni-owned-manual-menu[hidden]{display:none!important}
+      #omni-owned-manual-menu{position:fixed;z-index:1000;min-width:122px;padding:4px;border:1px solid #dce0e5;border-radius:8px;background:#fff;box-shadow:0 5px 14px #0003;color:#171a20;font:12px/1.4 system-ui,sans-serif}
+      #omni-owned-manual-menu button{box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:30px;padding:5px 8px;border:0;border-radius:4px;background:transparent;color:inherit;font:inherit;text-align:left;white-space:nowrap;cursor:pointer}
+      #omni-owned-manual-menu button:hover,#omni-owned-manual-menu button[aria-pressed="true"]{background:#f1f3f5}
+      .omni-owned-manual:focus-visible,#omni-owned-manual-menu button:focus-visible{outline:2px solid #16734b;outline-offset:-2px}
+      @media (pointer:coarse){#omni-owned-manual-menu button{min-height:44px}}
       .qu-grid-image.omni-owned-position{position:relative!important}
       .qu-grid-name.omni-owned-name-row{height:auto!important;min-height:24px!important;overflow:visible!important}
       .qu-grid-name-div.omni-owned-title{overflow:visible!important;white-space:normal!important;height:auto!important;width:auto!important;max-width:none!important}
@@ -1698,7 +1710,7 @@ const FF14Enhancements = (() => {
     panel.id = 'omni-owned-panel';
     panel.open = !data;
     // Only this constant string is HTML; imported names use textContent throughout.
-    panel.innerHTML = `<summary>商城道具收录</summary><div id="omni-owned-body"><p id="omni-owned-help">在商品卡片或详情页可手动标记整件商品。标记按角色保存在本地，优先于导入记录。切回「自动判定」可撤销手动标记。</p><div>角色</div><select aria-label="收录角色"></select><div role="group" aria-label="商品获取筛选"><button type="button" data-filter="all">全部显示</button><button type="button" data-filter="owned">只显示已获取</button><button type="button" data-filter="unowned">只显示未获取</button></div><div id="omni-owned-filter-note"></div><button type="button" data-action="import">导入收录 JSON</button><button type="button" data-action="refresh">更新商城清单</button><button type="button" data-action="clear">清除导入记录</button><input type="file" accept=".json,application/json" hidden><div id="omni-owned-status" role="status"></div></div>`;
+    panel.innerHTML = `<summary>商城道具收录</summary><div id="omni-owned-body"><p id="omni-owned-help">点击商品价格右侧或详情标题下方的「收录」按钮，可手动标记整件商品。标记按角色保存，优先于导入记录。切回「自动判定」可撤销手动标记。</p><div>角色</div><select aria-label="收录角色"></select><div role="group" aria-label="商品获取筛选"><button type="button" data-filter="all">全部显示</button><button type="button" data-filter="owned">只显示已获取</button><button type="button" data-filter="unowned">只显示未获取</button></div><div id="omni-owned-filter-note"></div><button type="button" data-action="import">导入收录 JSON</button><button type="button" data-action="refresh">更新商城清单</button><button type="button" data-action="clear">清除导入记录</button><input type="file" accept=".json,application/json" hidden><div id="omni-owned-status" role="status"></div></div>`;
     document.body.append(panel);
     function positionPanel() {
         panel.hidden = !FF14Enhancements.enabled(ENABLED_KEY);
@@ -1780,34 +1792,120 @@ const FF14Enhancements = (() => {
     function manualKey(name) {
         return JSON.stringify([characterId, normalize(name)]);
     }
-    function renderManual(host, name, enabled) {
-        let control = host.querySelector(':scope > .omni-owned-manual');
-        if (!enabled || !name) { control?.remove(); return; }
-        if (!control) {
-            control = document.createElement('select');
-            control.className = 'omni-owned-manual';
-            for (const [value, label] of Object.entries(MANUAL_LABELS)) control.add(new Option(label, value));
-            control.addEventListener('click', event => event.stopPropagation());
-            control.addEventListener('change', () => {
-                const key = manualKey(control.dataset.product);
-                try {
-                    const next = { ...readManual() };
-                    if (control.value === 'auto') delete next[key];
-                    else next[key] = control.value;
-                    GM_setValue(MANUAL_KEY, next);
-                    manual = next;
-                } catch (error) {
-                    panel.open = true;
-                    say(`保存手动标记失败：${error.message}`);
-                }
-                scan();
-            });
-            host.append(control);
+    const manualMenu = document.createElement('div');
+    manualMenu.id = 'omni-owned-manual-menu';
+    manualMenu.className = 'omni-owned-manual-menu';
+    manualMenu.setAttribute('role', 'group');
+    manualMenu.setAttribute('aria-label', '选择商品获取状态');
+    manualMenu.hidden = true;
+    let manualTrigger = null;
+    const manualOptions = Object.entries(MANUAL_LABELS).map(([value, label]) => {
+        const option = document.createElement('button');
+        option.type = 'button';
+        option.value = value;
+        const tick = document.createElement('span');
+        tick.setAttribute('aria-hidden', 'true');
+        option.append(label, tick);
+        manualMenu.append(option);
+        return option;
+    });
+    document.body.append(manualMenu);
+
+    function closeManualMenu(restoreFocus = false) {
+        if (!manualTrigger) return;
+        const previous = manualTrigger;
+        manualTrigger = null;
+        manualMenu.hidden = true;
+        previous.setAttribute('aria-expanded', 'false');
+        if (restoreFocus && previous.getClientRects().length) previous.focus({ preventScroll: true });
+    }
+    function updateManualOptions(state) {
+        for (const option of manualOptions) {
+            const selected = option.value === state;
+            option.setAttribute('aria-pressed', String(selected));
+            option.lastElementChild.textContent = selected ? '✓' : '';
         }
+    }
+    manualMenu.addEventListener('click', event => {
+        const option = event.target.closest('button');
+        if (!option || !manualTrigger) return;
+        const key = manualKey(manualTrigger.dataset.product);
+        closeManualMenu(true);
+        try {
+            const next = { ...readManual() };
+            if (option.value === 'auto') delete next[key];
+            else next[key] = option.value;
+            GM_setValue(MANUAL_KEY, next);
+            manual = next;
+        } catch (error) {
+            panel.open = true;
+            say(`保存手动标记失败：${error.message}`);
+        }
+        scan();
+    });
+    for (const type of ['click', 'focusin']) {
+        document.addEventListener(type, event => {
+            if (manualTrigger && !manualTrigger.contains(event.target) && !manualMenu.contains(event.target))
+                closeManualMenu();
+        });
+    }
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && manualTrigger) {
+            event.preventDefault();
+            closeManualMenu(true);
+        }
+    });
+    window.addEventListener('resize', () => closeManualMenu());
+    window.addEventListener('scroll', () => closeManualMenu(), { passive: true });
+
+    function renderManual(host, name, enabled) {
+        const placement = host.querySelector(':scope > .qu-grid-price') || host;
+        let control = host.querySelector(':scope > .omni-owned-manual, :scope > .qu-grid-price > .omni-owned-manual');
+        if (!enabled || !name) {
+            if (control === manualTrigger) closeManualMenu();
+            control?.remove();
+            return;
+        }
+        if (!control) {
+            control = document.createElement('button');
+            control.type = 'button';
+            control.className = 'omni-owned-manual';
+            control.setAttribute('aria-expanded', 'false');
+            control.setAttribute('aria-controls', manualMenu.id);
+            control.innerHTML = '<span></span><span class="omni-owned-chevron" aria-hidden="true"></span>';
+            control.addEventListener('click', event => {
+                event.stopPropagation();
+                const opening = manualTrigger !== control;
+                closeManualMenu(!opening);
+                if (!opening) return;
+                manualTrigger = control;
+                control.setAttribute('aria-expanded', 'true');
+                updateManualOptions(control.dataset.state);
+                const anchor = control.getBoundingClientRect();
+                manualMenu.hidden = false;
+                const viewportWidth = document.documentElement.clientWidth;
+                const left = Math.max(4, Math.min(anchor.right, viewportWidth - 4) - manualMenu.offsetWidth);
+                const above = anchor.top - manualMenu.offsetHeight - 6;
+                const top = above >= 4 ? above : anchor.bottom + 6;
+                Object.assign(manualMenu.style, { left: `${left}px`, top: `${top}px` });
+                manualMenu.querySelector('[aria-pressed="true"]').focus({ preventScroll: true });
+            });
+        }
+        if (control.parentNode !== placement) {
+            if (manualTrigger === control) closeManualMenu();
+            placement.append(control);
+        }
+        if (manualTrigger === control && (control.dataset.product !== name || control.dataset.character !== characterId))
+            closeManualMenu();
+        const saved = manual[manualKey(name)];
+        const state = saved === 'owned' || saved === 'unowned' ? saved : 'auto';
         control.dataset.product = name;
-        control.setAttribute('aria-label', `手动标记 ${name}`);
-        control.title = '更改此商品的获取状态';
-        control.value = manual[manualKey(name)] || 'auto';
+        control.dataset.character = characterId;
+        control.dataset.state = state;
+        control.setAttribute('aria-label', `手动标记 ${name}，${MANUAL_LABELS[state]}`);
+        if (control.firstElementChild.textContent !== MANUAL_BADGES[state])
+            control.firstElementChild.textContent = MANUAL_BADGES[state];
+        if (manualTrigger === control) updateManualOptions(state);
     }
     function resultFor(name, automatic) {
         const value = manual[manualKey(name)];
@@ -1820,14 +1918,12 @@ const FF14Enhancements = (() => {
         if (!badge) { badge = document.createElement('span'); badge.className = className; host.append(badge); }
         const text = badgeText(result);
         if (badge.textContent !== text) badge.textContent = text;
-        badge.classList.toggle('omni-owned-partial', !result.full && !result.manual);
-        badge.classList.toggle('omni-owned-unowned', !result.full && !!result.manual);
+        badge.classList.toggle('omni-owned-partial', !result.full);
         badge.title = title;
     }
     function tooltip(result) {
         if (!result) return '';
         const c = data?.characters.find(c => c.id === characterId);
-        if (result.manual) return `${c?.name || '仅手动收录'} · ${result.full ? MANUAL_LABELS.owned : MANUAL_LABELS.unowned}`;
         return `${c?.name || ''} @ ${c?.worldName || c?.homeWorldId || ''}\n` + result.names.map(name => {
             const record = owned.get(normalize(name));
             return `${record ? '✓' : '○'} ${name}${record ?
@@ -1869,24 +1965,29 @@ const FF14Enhancements = (() => {
             imageEl.classList.toggle('omni-owned-position', enabled && FF14Enhancements.enabled('angelways.ownedImageBadge'));
             nameEl.classList.toggle('omni-owned-title', enabled && FF14Enhancements.enabled('angelways.ownedNameBadge'));
             nameEl.parentElement?.classList.toggle('omni-owned-name-row', enabled && FF14Enhancements.enabled('angelways.ownedNameBadge'));
-            mark(imageEl, 'omni-owned-image', FF14Enhancements.enabled('angelways.ownedImageBadge') ? result : null, tooltip(result));
-            mark(nameEl, 'omni-owned-name', FF14Enhancements.enabled('angelways.ownedNameBadge') ? result : null, tooltip(result));
+            const badge = result?.manual ? null : result;
+            const title = tooltip(badge);
+            mark(imageEl, 'omni-owned-image', FF14Enhancements.enabled('angelways.ownedImageBadge') ? badge : null, title);
+            mark(nameEl, 'omni-owned-name', FF14Enhancements.enabled('angelways.ownedNameBadge') ? badge : null, title);
             renderManual(card, name, enabled);
         }
         const detail = document.querySelector('.detail-right-title');
         if (detail) {
             const name = [...detail.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join('').trim();
             const result = enabled ? resultFor(name, automatic) : null;
-            mark(detail, 'omni-owned-name', FF14Enhancements.enabled('angelways.ownedNameBadge') ? result : null, tooltip(result));
+            const badge = result?.manual ? null : result;
+            mark(detail, 'omni-owned-name', FF14Enhancements.enabled('angelways.ownedNameBadge') ? badge : null, tooltip(badge));
             renderManual(detail, name, enabled);
         }
+        if (manualTrigger && (!manualTrigger.isConnected || manualTrigger.closest('[data-omni-owned-hidden]')))
+            closeManualMenu();
         filterNote.textContent = !FF14Enhancements.enabled(ENABLED_KEY) ? '商城道具收录已关闭；导入数据保留，所有商品正常显示。'
             : !allowed ? '此商品不属于 FF14，收录标记和筛选不生效。'
             : location.pathname !== '/tools-shop' ? '商品筛选在列表页面生效。'
             : `本页显示 ${visible}/${total} 件。${excluded ? '此分类仅显示手动标记，商品全部显示。'
                 : automatic ? '手动标记优先，部分已获取归入未获取。' : '当前使用手动标记。'}`;
     }
-    const injected = '.omni-owned-image,.omni-owned-name,.omni-owned-manual';
+    const injected = '.omni-owned-image,.omni-owned-name,.omni-owned-manual,.omni-owned-manual-menu';
     const observer = new MutationObserver(records => {
         const relevant = records.some(r => {
             const element = r.target.nodeType === 1 ? r.target : r.target.parentElement;
