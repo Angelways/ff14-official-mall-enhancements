@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         一系列FF14官网&商城功能优化
 // @namespace    https://github.com/Angelways/ff14-official-mall-enhancements
-// @version      3.3.1
+// @version      3.3.2
 // @author       Angelways, annangela
 // @homepageURL  https://github.com/Angelways
 // @description  保留独立登录配置和商城收录面板，另提供总配置悬浮窗控制登录、官网、仓库及收录功能。
@@ -1909,7 +1909,8 @@ const FF14Enhancements = (() => {
     }
     function resultFor(name, automatic) {
         const value = manual[manualKey(name)];
-        if (value === 'owned' || value === 'unowned') return { full: value === 'owned', manual: true };
+        if (value === 'owned') return { full: true, manual: true };
+        if (value === 'unowned') return null;
         return automatic ? classify(requirementFor(name), owned) : null;
     }
     function mark(host, className, result, title) {
@@ -1924,6 +1925,7 @@ const FF14Enhancements = (() => {
     function tooltip(result) {
         if (!result) return '';
         const c = data?.characters.find(c => c.id === characterId);
+        if (result.manual) return `${c?.name || '仅手动收录'} · 手动标记为已获取`;
         return `${c?.name || ''} @ ${c?.worldName || c?.homeWorldId || ''}\n` + result.names.map(name => {
             const record = owned.get(normalize(name));
             return `${record ? '✓' : '○'} ${name}${record ?
@@ -1965,18 +1967,16 @@ const FF14Enhancements = (() => {
             imageEl.classList.toggle('omni-owned-position', enabled && FF14Enhancements.enabled('angelways.ownedImageBadge'));
             nameEl.classList.toggle('omni-owned-title', enabled && FF14Enhancements.enabled('angelways.ownedNameBadge'));
             nameEl.parentElement?.classList.toggle('omni-owned-name-row', enabled && FF14Enhancements.enabled('angelways.ownedNameBadge'));
-            const badge = result?.manual ? null : result;
-            const title = tooltip(badge);
-            mark(imageEl, 'omni-owned-image', FF14Enhancements.enabled('angelways.ownedImageBadge') ? badge : null, title);
-            mark(nameEl, 'omni-owned-name', FF14Enhancements.enabled('angelways.ownedNameBadge') ? badge : null, title);
+            const title = tooltip(result);
+            mark(imageEl, 'omni-owned-image', FF14Enhancements.enabled('angelways.ownedImageBadge') ? result : null, title);
+            mark(nameEl, 'omni-owned-name', FF14Enhancements.enabled('angelways.ownedNameBadge') ? result : null, title);
             renderManual(card, name, enabled);
         }
         const detail = document.querySelector('.detail-right-title');
         if (detail) {
             const name = [...detail.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join('').trim();
             const result = enabled ? resultFor(name, automatic) : null;
-            const badge = result?.manual ? null : result;
-            mark(detail, 'omni-owned-name', FF14Enhancements.enabled('angelways.ownedNameBadge') ? badge : null, tooltip(badge));
+            mark(detail, 'omni-owned-name', FF14Enhancements.enabled('angelways.ownedNameBadge') ? result : null, tooltip(result));
             renderManual(detail, name, enabled);
         }
         if (manualTrigger && (!manualTrigger.isConnected || manualTrigger.closest('[data-omni-owned-hidden]')))

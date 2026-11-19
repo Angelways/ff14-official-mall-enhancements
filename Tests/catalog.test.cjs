@@ -128,7 +128,18 @@ test('manual marks work without an import, filter the list, and persist across l
         assert.equal(control.lastElementChild.className, 'omni-owned-chevron');
         chooseManual(document, control, 'owned');
         assert.equal(control.firstElementChild.textContent, '✓ 已获取');
+        assert.equal(document.querySelector('.qu-grid-image > .omni-owned-image').textContent, '✓ 已获取');
+        assert.equal(document.querySelector('.qu-grid-name-div > .omni-owned-name').textContent, '✓ 已获取');
+        values.set('angelways.ownedImageBadge', false);
+        document.dispatchEvent(new list.window.Event('ff14-enhancements-change'));
         assert.equal(document.querySelector('.omni-owned-image'), null);
+        assert.equal(document.querySelector('.omni-owned-name').textContent, '✓ 已获取');
+        values.set('angelways.ownedImageBadge', true);
+        values.set('angelways.ownedNameBadge', false);
+        document.dispatchEvent(new list.window.Event('ff14-enhancements-change'));
+        assert.equal(document.querySelector('.omni-owned-image').textContent, '✓ 已获取');
+        assert.equal(document.querySelector('.omni-owned-name'), null);
+        values.delete('angelways.ownedNameBadge');
         document.querySelector('[data-filter="owned"]').click();
         assert.equal(document.querySelectorAll('[data-omni-owned-hidden]').length, fixtures.length - 1);
     } finally { list.window.close(); }
@@ -138,8 +149,10 @@ test('manual marks work without an import, filter the list, and persist across l
         const document = detail.window.document;
         const control = document.querySelector('.detail-right-title > .omni-owned-manual');
         assert.equal(control.dataset.state, 'owned');
+        assert.equal(document.querySelector('.detail-right-title > .omni-owned-name').textContent, '✓ 已获取');
         chooseManual(document, control, 'unowned');
         assert.equal(control.firstElementChild.textContent, '− 未获取');
+        assert.equal(document.querySelector('.omni-owned-name'), null);
         chooseManual(document, control, 'auto');
         assert.equal(document.querySelector('.omni-owned-name'), null);
     } finally { detail.window.close(); }
@@ -155,6 +168,11 @@ test('manual overrides are local to a character and automatic restores imported 
         const role = '[aria-label="收录角色"]';
         const control = document.querySelector('.omni-owned-manual');
         assert.equal(badge(), '✓ 已获取');
+        const automaticBadges = [...document.querySelectorAll('.omni-owned-image, .omni-owned-name')]
+            .map(element => [element.className, element.textContent]);
+        chooseManual(document, control, 'owned');
+        assert.deepEqual([...document.querySelectorAll('.omni-owned-image, .omni-owned-name')]
+            .map(element => [element.className, element.textContent]), automaticBadges);
         chooseManual(document, control, 'unowned');
         assert.equal(control.dataset.state, 'unowned');
         assert.equal(badge(), undefined);
